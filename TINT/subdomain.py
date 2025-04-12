@@ -50,5 +50,9 @@ def brute_force(wordlist):
         print(f"{url} is up!")
     else:
         print(f"{url} seems to be down or blocking port 80.")
-    
-brute_force("uij")
+
+ 
+with open("wordlists.txt","r") as f:
+    wordlists=f.read.split()
+    for wordlist in wordlists:
+        brute_force(wordlist)
