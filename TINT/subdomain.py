@@ -1,58 +1,87 @@
 import requests
 import json
 import socket
+url="https://admin.google.com"
 domain="google.com"
 
 
-def crt_sh(domain):
-    try:
-        #url of crt.sh that gives a subdomains
-        url=f"https://crt.sh/?q={domain}&output=json"
 
-        #send requests and find store as response
-        response=requests.get(url)
+class Dns:
+        #To check Live hosts
+        @staticmethod
+        def is_host_alive(domain, port=80 or 443, timeout=1):
+            try:
+                with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
+                    sock.settimeout(timeout)
+                    result = sock.connect_ex((domain, port))
+                    return result == 0
+            except socket.error:
+                return False
 
-        #load json data
-        data=json.loads(response.text)
+        @staticmethod
+        #Fetch Subdomains from Crt_sh 
+        def crt_sh(domain):
+            try:
+                #url of crt.sh that gives a subdomains
+                url=f"https://crt.sh/?q={domain}&output=json"
 
-        #find common_name from response
-        subdomains=[entry['common_name'] for entry in data]
+                #send requests and find store as response
+                response=requests.get(url)
 
-        #exclude duplicate subdomains
-        unique_subdomains = list(set(subdomains))
+                #load json data
+                data=json.loads(response.text)
 
-        #print output of all subdomains
-        for subdomain in unique_subdomains:
-            print(subdomain)
-    except Exception as e:
-        print(e)
+                #find common_name from response
+                subdomains=[entry['common_name'] for entry in data]
+
+                #exclude duplicate subdomains
+                unique_subdomains = list(set(subdomains))
+
+                #print output of all subdomains
+                for subdomain in unique_subdomains:
+                    print(subdomain)
+            except Exception as e:
+                print(e)
+
+        @staticmethod
+        # Brute force function for find subdomains
+        def brute_force(wordlists, domain):
+            with open(wordlists, "r") as f:
+                wordlist = f.read().split()
+                
+            for word in wordlist:
+                full_domain = f"{word}.{domain}"
+                if Dns.is_host_alive(full_domain):
+                    print(f"[+] Found: {full_domain}")
+
+        @staticmethod
+        #Function for find redirection and history 
+
+        def find_redirection(url):
+
+            try:
+                response=requests.get(url,allow_redirects=True,timeout=5)
+                if response.history:
+                    print("Redirection chain:")
+                    for resp in response.history:
+                        print(f"{resp.status_code} -> {resp.url}")
+                    print(f"Final URL:{response.url}")
+                    return response.url
+                else:
+                    print("no redirects.")
+                    return domain
+            except requests.RequestException as e:
+                print(F"Error: {e}")
+                return None
+
+        @staticmethod
+        #Function for find all status code of url 
+        def status_code_checker(url,code):
+            response=requests.get(url,timeout=5)
+            if response.status_code==code:
+                print(f"{url} -> {response.status_code}")
+            
 
 
 
 
-
-def is_host_alive(domain, port=80 or 443, timeout=1):
-    try:
-        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
-            sock.settimeout(timeout)
-            result = sock.connect_ex((domain, port))
-            return result == 0
-    except socket.error:
-        return False
-    
-
-
-def brute_force(wordlist):
-    url=f"{wordlist}.{domain}"
-
-    # Example usage
-    if is_host_alive(url):
-        print(f"{url} is up!")
-    else:
-        print(f"{url} seems to be down or blocking port 80.")
-
- 
-with open("wordlists.txt","r") as f:
-    wordlists=f.read.split()
-    for wordlist in wordlists:
-        brute_force(wordlist)
