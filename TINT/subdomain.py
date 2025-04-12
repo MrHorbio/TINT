@@ -1,6 +1,7 @@
 import requests
 import json
-domain="o7services.com"
+import socket
+domain="google.com"
 
 
 def crt_sh(domain):
@@ -29,12 +30,25 @@ def crt_sh(domain):
 
 
 
-def get_subdomains():
-  
-        url = f"https://subdomainfinder.c99.nl/scans/2025-04-10/google.com"
-        response=requests.get(url)
-        print(response.text)
+
+def is_host_alive(domain, port=80 or 443, timeout=1):
+    try:
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
+            sock.settimeout(timeout)
+            result = sock.connect_ex((domain, port))
+            return result == 0
+    except socket.error:
+        return False
+    
 
 
+def brute_force(wordlist):
+    url=f"{wordlist}.{domain}"
 
-get_subdomains()
+    # Example usage
+    if is_host_alive(url):
+        print(f"{url} is up!")
+    else:
+        print(f"{url} seems to be down or blocking port 80.")
+    
+brute_force("uij")
