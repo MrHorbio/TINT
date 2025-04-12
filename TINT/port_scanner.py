@@ -25,4 +25,3 @@ def open_ports(domain, ports):
         print("[ERROR] Invalid port input. Please provide a single port or a range of ports (start, end).")
 
 
-
