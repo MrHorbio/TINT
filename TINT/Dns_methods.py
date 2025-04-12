@@ -5,6 +5,7 @@ import whois
 import dns.resolver
 import re
 
+
 url="https://admin.google.com"
 domain="google.com"
 
@@ -160,4 +161,7 @@ class Dns:
             except socket.herror:
                 return "No PTR record found."
 
- 
+
+
+
+      
