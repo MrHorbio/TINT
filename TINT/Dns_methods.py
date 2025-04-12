@@ -14,7 +14,7 @@ domain="google.com"
 class Dns:
         #To check Live hosts
         @staticmethod
-        def is_host_alive(domain, port=80 or 443, timeout=1):
+        def is_host_alive(domain, port=80, timeout=1):
             try:
                 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
                     sock.settimeout(timeout)
