@@ -3,6 +3,7 @@ import json
 import socket
 import whois
 import dns.resolver
+import re
 
 url="https://admin.google.com"
 domain="google.com"
@@ -143,9 +144,20 @@ class Dns:
             except Exception as e:
                 return {'error': f"DNS query failed: {str(e)}"}
 
+        #reverse_dns i.e IP to Domain and Domain to IP 
+        @staticmethod
+        def reverse_dns(ip):
+            strict_ip_pattern = r"\b(?:(?:25[0-5]|2[0-4][0-9]|1?\d{1,2})\.){3}(?:25[0-5]|2[0-4][0-9]|1?\d{1,2})\b"
 
+            try:
+                matches=re.findall(strict_ip_pattern,ip)
+                if matches: 
+                    host_info = socket.gethostbyaddr(ip)
+                    return host_info[0] 
+                else:
+                    host_info = socket.gethostbyname(ip)
+                    return host_info
+            except socket.herror:
+                return "No PTR record found."
 
-                
-                
-
-
+ 
