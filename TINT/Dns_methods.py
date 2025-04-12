@@ -2,6 +2,7 @@ import requests
 import json
 import socket
 import whois
+import dns.resolver
 
 url="https://admin.google.com"
 domain="google.com"
@@ -105,7 +106,46 @@ class Dns:
             except Exception as e:
                 return {"error": str(e)}
 
-        
-        
+        #This function is use for dns resolver
+        def get_dns_info(domain):
+            dns_info = {}
+
+            try:
+                # A Records (IP Address)
+                a_records = dns.resolver.resolve(domain, 'A')
+                dns_info['A Record'] = [ip.address for ip in a_records]
+
+                # MX Records (Mail Servers)
+                mx_records = dns.resolver.resolve(domain, 'MX')
+                dns_info['MX Records'] = [(mx.preference, mx.exchange.to_text()) for mx in mx_records]
+
+                # NS Records (Name Servers)
+                ns_records = dns.resolver.resolve(domain, 'NS')
+                dns_info['NS Records'] = [ns.to_text() for ns in ns_records]
+
+                # CNAME Records (Canonical Names)
+                try:
+                    cname_records = dns.resolver.resolve(domain, 'CNAME')
+                    dns_info['CNAME Records'] = [cname.to_text() for cname in cname_records]
+                except dns.resolver.NoAnswer:
+                    dns_info['CNAME Records'] = None
+
+                # TXT Records (Text information)
+                txt_records = dns.resolver.resolve(domain, 'TXT')
+                dns_info['TXT Records'] = [txt.to_text() for txt in txt_records]
+
+                return dns_info
+
+            except dns.resolver.NoAnswer as e:
+                return {'error': f"No DNS record found: {str(e)}"}
+            except dns.resolver.NXDOMAIN as e:
+                return {'error': f"Domain does not exist: {str(e)}"}
+            except Exception as e:
+                return {'error': f"DNS query failed: {str(e)}"}
+
+
+
+                
+                
 
 
