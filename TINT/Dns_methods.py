@@ -1,6 +1,8 @@
 import requests
 import json
 import socket
+import whois
+
 url="https://admin.google.com"
 domain="google.com"
 
@@ -79,9 +81,31 @@ class Dns:
         def status_code_checker(url,code):
             response=requests.get(url,timeout=5)
             if response.status_code==code:
-                print(f"{url} -> {response.status_code}")
+                result =f"{url} -> {response.status_code}"
             
+            return result
+            
+        @staticmethod
+        #Find whois information for domain
+        def get_whois_data(domain):
+            try:
+                data = whois.whois(domain)
+                result = {
+                    "domain": data.domain_name,
+                    "registrar": data.registrar,
+                    "creation_date": data.creation_date,
+                    "expiration_date": data.expiration_date,
+                    "updated_date": data.updated_date,
+                    "status": data.status,
+                    "name_servers": data.name_servers,
+                    "emails": data.emails,
+                    "whois_server": data.whois_server
+                }
+                return result
+            except Exception as e:
+                return {"error": str(e)}
 
-
+        
+        
 
 
