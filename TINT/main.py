@@ -1,6 +1,7 @@
 import random
-import Dns_methods
+from Dns_methods import Dns
 import port_scanner
+import argparse
 
 def get_banners():
     return [
@@ -99,6 +100,40 @@ def scanner(domain,port,filename):
         with open(filename,"w") as f:
             f.write(result)
 
+
+def  host_discovery(domain,port,timeout=None):
+    t = [ timeout if timeout else 5 ]
+    Dns.is_host_alive(domain,port,timeout=t)
+
+
+
+
+
+# CLI Setup 
+def main():
+    parser = argparse.ArgumentParser(description="TINT - Target Information Gathering Tool")
+    subparsers = parser.add_subparsers(dest='command',help='subcommands (host ,scan)')
+
+
+    #Scanner command
+    host_parser = subparsers.add_parser('host',help="Perform host discovery")
+    host_parser.add_argument('-d', '--domain', required=True, help='Target domain to scan')
+    host_parser.add_argument('-p', '--port', type=int, required=True, help='Target port number')
+    host_parser.add_argument('-t', '--timeout', type=int, help='Timeout in seconds (default: 5)')
+   
+   
+
+   
+    host_parser.add_argument('-f','--file',type=str,help= 'save output file')
+   
+    
+
+    args = parser.parse_args()  
+
+    if args.command == 'host':
+        host_discovery(args.domain,)
+    else:
+        parser.print_help()
 
 
 
