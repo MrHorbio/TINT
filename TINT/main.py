@@ -88,7 +88,7 @@ your task and gather valuable information from the internet.
 '''
     print(description)
 
-def main():
+def main2():
     banners = get_banners()
     print(random.choice(banners))
     print_description()
@@ -111,6 +111,11 @@ def  host_discovery(domain,port,timeout=None):
 
 # CLI Setup 
 def main():
+
+        #show banner 
+    main2()
+
+
     parser = argparse.ArgumentParser(description="TINT - Target Information Gathering Tool")
     subparsers = parser.add_subparsers(dest='command',help='subcommands (host ,scan)')
 
@@ -131,7 +136,7 @@ def main():
     args = parser.parse_args()  
 
     if args.command == 'host':
-        host_discovery(args.domain,)
+        host_discovery(args.domain,args.port,args.timeout)
     else:
         parser.print_help()
 
