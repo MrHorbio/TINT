@@ -101,9 +101,12 @@ def scanner(domain,port,filename):
             f.write(result)
 
 
-def  host_discovery(domain,port,timeout=None):
-    t = [ timeout if timeout else 5 ]
-    Dns.is_host_alive(domain,port,timeout=t)
+def  host_discovery(domain,timeout=None):
+    t = timeout if timeout else 5 
+    
+    result = Dns.is_host_alive(domain,port=80,timeout=t)
+    if result:
+        print(f"✔️  {domain} -> host is up")
 
 
 
@@ -123,18 +126,31 @@ def main():
     #Scanner command
     host_parser = subparsers.add_parser('host',help="  Perform host discovery")
     host_parser.add_argument('-d', '--domain', required=True, help='Target domain to scan')
-    host_parser.add_argument('-p', '--port', type=int, required=True, help='Target port number')
+    #host_parser.add_argument('-p', '--port', help='Target port number')
     host_parser.add_argument('-t', '--timeout', type=int, help='Timeout in seconds (default: 5)')
    
     
 
+
+
+
+
+
+
+
+
+
+
+
+    
+
     args = parser.parse_args()  
 
-    domain = args.domain
-    port = args.port
+    
+
 
     if args.command == 'host':
-        host_discovery(args.domain,args.port,args.timeout)
+        host_discovery(args.domain,args.timeout)
     else:
         parser.print_help()
 
