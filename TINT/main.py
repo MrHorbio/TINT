@@ -131,8 +131,8 @@ def main():
 
     #Port Scanner command [ To scan open ports with range and without range ]
     port_parser = subparsers.add_parser('port',help="  Perform port Scanning")
-    port_parser.add_argument('-p','--port',required=True,help="  port number[ ex: 21 OR 1-100 ]",metavar='')
     port_parser.add_argument('-d','--domain',required=True,help="   Target domain to scan",metavar='')
+    port_parser.add_argument('-p','--port',required=True,help="  port number[ ex: 21 OR Range-> 1,100 ]",metavar='')
     port_parser.add_argument('-o','--output', help="  output file",metavar='')
 
 
