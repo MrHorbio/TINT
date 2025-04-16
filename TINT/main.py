@@ -122,27 +122,21 @@ def main():
     parser = argparse.ArgumentParser(description="TINT - Target Information Gathering Tool")
     subparsers = parser.add_subparsers(dest='command',metavar='')
 
-
     #Scanner command
     host_parser = subparsers.add_parser('host',help="  Perform host discovery")
-    host_parser.add_argument('-d', '--domain', required=True, help='Target domain to scan')
+    host_parser.add_argument('-d', '--domain', required=True, help='Target domain to scan',metavar='')
     #host_parser.add_argument('-p', '--port', help='Target port number')
-    host_parser.add_argument('-t', '--timeout', type=int, help='Timeout in seconds (default: 5)')
-   
-    
+    host_parser.add_argument('-t', '--timeout', type=int, help='Timeout in seconds (default: 5)',metavar='')
+
+
+    #Port Scanner command [ To scan open ports with range and without range ]
+    port_parser = subparsers.add_parser('port',help="  Perform port Scanning")
+    port_parser.add_argument('-p','--port',required=True,help="  port number[ ex: 21 OR 1-100 ]",metavar='')
+    port_parser.add_argument('-d','--domain',required=True,help="   Target domain to scan",metavar='')
+    port_parser.add_argument('-o','--output', help="  output file",metavar='')
 
 
 
-
-
-
-
-
-
-
-
-
-    
 
     args = parser.parse_args()  
 
@@ -151,6 +145,8 @@ def main():
 
     if args.command == 'host':
         host_discovery(args.domain,args.timeout)
+    elif args.command == "port":
+        scanner(args.domain,args.port,args.output)
     else:
         parser.print_help()
 
