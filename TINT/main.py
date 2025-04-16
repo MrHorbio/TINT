@@ -117,23 +117,21 @@ def main():
 
 
     parser = argparse.ArgumentParser(description="TINT - Target Information Gathering Tool")
-    subparsers = parser.add_subparsers(dest='command',help='subcommands (host ,scan)')
+    subparsers = parser.add_subparsers(dest='command',metavar='')
 
 
     #Scanner command
-    host_parser = subparsers.add_parser('host',help="Perform host discovery")
+    host_parser = subparsers.add_parser('host',help="  Perform host discovery")
     host_parser.add_argument('-d', '--domain', required=True, help='Target domain to scan')
     host_parser.add_argument('-p', '--port', type=int, required=True, help='Target port number')
     host_parser.add_argument('-t', '--timeout', type=int, help='Timeout in seconds (default: 5)')
    
-   
-
-   
-    host_parser.add_argument('-f','--file',type=str,help= 'save output file')
-   
     
 
     args = parser.parse_args()  
+
+    domain = args.domain
+    port = args.port
 
     if args.command == 'host':
         host_discovery(args.domain,args.port,args.timeout)
