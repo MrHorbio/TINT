@@ -109,6 +109,20 @@ def  host_discovery(domain,timeout=None):
         print(f"✔️  {domain} -> host is up")
 
 
+def subdomain(domain,wordlists):
+    
+    if wordlists:
+        print("Brute force is running.... ")
+        Dns.brute_force(wordlists,domain)
+    else:
+       print("Fetching Subdomains..... ")
+       a = Dns.crt_sh(domain)
+       print(a)
+
+
+
+
+
 
 
 
@@ -136,7 +150,10 @@ def main():
     port_parser.add_argument('-o','--output', help="  output file",metavar='')
 
 
-
+    #Subdomain enumeration command
+    sub = subparsers.add_parser('sub',help="Perform subdomain enumeration")
+    sub.add_argument('-d','--domain', required=True,help="Target domain to scan", metavar="")
+    sub.add_argument('-w','--wordlists',help="PATH/of/Wordlist",metavar="")
 
     args = parser.parse_args()  
 
@@ -147,10 +164,13 @@ def main():
         host_discovery(args.domain,args.timeout)
     elif args.command == "port":
         scanner(args.domain,args.port,args.output)
+    elif args.command == "sub":
+        subdomain(args.domain,args.wordlist)
     else:
         parser.print_help()
 
 
 
-if __name__ == "__main__":
+'''if __name__ == "__main__":
     main()
+'''
