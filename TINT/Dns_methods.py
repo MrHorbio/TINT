@@ -43,14 +43,14 @@ class Dns:
                 unique_subdomains = list(set(subdomains))
 
                 #print output of all subdomains
-                for subdomain in unique_subdomains:
-                    print(subdomain)
+                for sub in unique_subdomains:
+                    print(sub)
             except Exception as e:
-                print(e)
+                    print(f"Error: {e}")
 
         @staticmethod
         # Brute force function for find subdomains
-        def brute_force(wordlists, domain):
+        def brute_force(domain,wordlists):
             with open(wordlists, "r") as f:
                 wordlist = f.read().split()
                 

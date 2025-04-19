@@ -88,37 +88,60 @@ your task and gather valuable information from the internet.
 '''
     print(description)
 
-def main2():
+def UI():
     banners = get_banners()
     print(random.choice(banners))
     print_description()
 
 
-def scanner(domain,port,filename):
+'''def scanner(domain,port,filename):
     result = port_scanner.open_ports(domain,port)
     if filename:
         with open(filename,"w") as f:
-            f.write(result)
+            f.write(result)'''
 
-
-def  host_discovery(domain,timeout=None):
+#function for  host discovery 
+def  host_discovery(domain,wordlist=None,timeout=None):
     t = timeout if timeout else 5 
-    
-    result = Dns.is_host_alive(domain,port=80,timeout=t)
-    if result:
-        print(f"✔️  {domain} -> host is up")
+    if wordlist:
+        for word in wordlist:
+            try:
+                result = Dns.is_host_alive(word,port=80,timeout=t)
+                if result:
+                    print(f"✔️  {domain} -> host is up")
+                else:
+                    print(f"❌  {word} -> host is down")
+            except Exception as e:
+                print(f"⚠️  Error checking {word}: {e}")
+    else:
+        # Only one domain to check
+        try:
+            result = Dns.is_host_alive(domain, port=80, timeout=t)
+            if result:
+                print(f"✔️  {domain} -> host is up")
+            else:
+                print(f"❌  {domain} -> host is down")
+        except Exception as e:
+            print(f"⚠️  Error checking {domain}: {e}")
 
+
+#function for subdomain enumeration
 
 def subdomain(domain,wordlists):
     
     if wordlists:
         print("Brute force is running.... ")
-        Dns.brute_force(wordlists,domain)
+        a = Dns.brute_force(domain,wordlists)
+        print(a)
     else:
        print("Fetching Subdomains..... ")
        a = Dns.crt_sh(domain)
        print(a)
 
+
+#check redirection 
+def redirection_checker():
+    pas
 
 
 
@@ -129,8 +152,8 @@ def subdomain(domain,wordlists):
 # CLI Setup 
 def main():
 
-        #show banner 
-    main2()
+    #show banner 
+    UI()
 
 
     parser = argparse.ArgumentParser(description="TINT - Target Information Gathering Tool")
@@ -138,16 +161,17 @@ def main():
 
     #Scanner command
     host_parser = subparsers.add_parser('host',help="  Perform host discovery")
-    host_parser.add_argument('-d', '--domain', required=True, help='Target domain to scan',metavar='')
+    host_parser.add_argument('-d', '--domain',  help='Target domain to scan',metavar='')
+    host_parser.add_argument('-iL', '--inputfilename',  help='-iL <inputfilename>: Input from list of hosts/networks',metavar='')
     #host_parser.add_argument('-p', '--port', help='Target port number')
     host_parser.add_argument('-t', '--timeout', type=int, help='Timeout in seconds (default: 5)',metavar='')
 
 
-    #Port Scanner command [ To scan open ports with range and without range ]
+    '''  #Port Scanner command [ To scan open ports with range and without range ]
     port_parser = subparsers.add_parser('port',help="  Perform port Scanning")
     port_parser.add_argument('-d','--domain',required=True,help="   Target domain to scan",metavar='')
     port_parser.add_argument('-p','--port',required=True,help="  port number[ ex: 21 OR Range-> 1,100 ]",metavar='')
-    port_parser.add_argument('-o','--output', help="  output file",metavar='')
+    port_parser.add_argument('-o','--output', help="  output file",metavar='')'''
 
 
     #Subdomain enumeration command
@@ -161,16 +185,19 @@ def main():
 
 
     if args.command == 'host':
-        host_discovery(args.domain,args.timeout)
-    elif args.command == "port":
-        scanner(args.domain,args.port,args.output)
+        wordlist=None
+        if args.inputfilename:
+            with open(args.inputfilename) as f:
+                wordlist = [line.strip() for line in f if line.strip()]
+        host_discovery(args.domain,wordlist,args.timeout)
+    #elif args.command == "port":
+        #scanner(args.domain,args.port,args.output)
     elif args.command == "sub":
-        subdomain(args.domain,args.wordlist)
+        subdomain(args.domain,args.wordlists)
     else:
         parser.print_help()
 
 
 
-'''if __name__ == "__main__":
+if __name__ == "__main__":
     main()
-'''
