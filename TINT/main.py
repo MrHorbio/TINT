@@ -108,7 +108,7 @@ def  host_discovery(domain,wordlist=None,timeout=None):
             try:
                 result = Dns.is_host_alive(word,port=80,timeout=t)
                 if result:
-                    print(f"✔️  {domain} -> host is up")
+                    print(f"✔️  {word}-> host is up")
                 else:
                     print(f"❌  {word} -> host is down")
             except Exception as e:
@@ -144,13 +144,25 @@ def redirection_checker(url,domainlist):
     try:
         if domainlist:
             with open(domainlist,'r') as file:
-                domains = file.open().strip()
+                domains = file.read().splitlines()
+
                 for domain in domains:
-                    url = f"https://{domain}/"
-                    Dns.find_redirection(url)
+                    domain = domain.strip()
+                    if domain and '.' in domain:
+                        url = f"https://{domain}/"
+                        try:
+                            Dns.find_redirection(url)
+                        except Exception as e :
+                            print(e)
+                        
         else:
-            if 
-            Dns.find_redirection(url)
+            if not url.startswith(("https" or "http")):
+                correct_url = f"https://{url}/"
+            else:
+                correct_url = url
+            
+            Dns.find_redirection(correct_url)
+
     except Exception as e:
         print(f"⚠️  Error ->  {e}")
 
@@ -172,7 +184,7 @@ def main():
     #Scanner command
     host_parser = subparsers.add_parser('host',help="  Perform host discovery")
     host_parser.add_argument('-d', '--domain',  help='Target domain to scan',metavar='')
-    host_parser.add_argument('-iL', '--inputfilename',  help='-iL <inputfilename>: Input from list of hosts/networks',metavar='')
+    host_parser.add_argument('-iL','--inputfile',  help='-iL <inputfilename>: Input from list of hosts/networks',metavar='')
     #host_parser.add_argument('-p', '--port', help='Target port number')
     host_parser.add_argument('-t', '--timeout', type=int, help='Timeout in seconds (default: 5)',metavar='')
 
@@ -189,6 +201,12 @@ def main():
     sub.add_argument('-d','--domain', required=True,help="Target domain to scan", metavar="")
     sub.add_argument('-w','--wordlists',help="PATH/of/Wordlist",metavar="")
 
+
+    #find redirections
+    red = subparsers.add_parser('redir',help="Perform redirection check ")
+    red.add_argument('-u','--url',help="Test redirection on single url",metavar=" ")
+    red.add_argument('-iL','--inputfile',help="list of target urls",metavar= " ")
+
     args = parser.parse_args()  
 
     
@@ -196,14 +214,16 @@ def main():
 
     if args.command == 'host':
         wordlist=None
-        if args.inputfilename:
-            with open(args.inputfilename) as f:
+        if args.inputfile:
+            with open(args.inputfile) as f:
                 wordlist = [line.strip() for line in f if line.strip()]
         host_discovery(args.domain,wordlist,args.timeout)
     #elif args.command == "port":
         #scanner(args.domain,args.port,args.output)
     elif args.command == "sub":
         subdomain(args.domain,args.wordlists)
+    elif args.command == "redir":
+        redirection_checker(args.url,args.inputfile)
     else:
         parser.print_help()
 

@@ -76,7 +76,7 @@ class Dns:
                     print("no redirects.")
                     return domain
             except requests.RequestException as e:
-                print(F"Error: {e}")
+                print(F"Error-> {e} ")
                 return None
 
         @staticmethod
