@@ -140,9 +140,19 @@ def subdomain(domain,wordlists):
 
 
 #check redirection 
-def redirection_checker():
-    pas
-
+def redirection_checker(url,domainlist):
+    try:
+        if domainlist:
+            with open(domainlist,'r') as file:
+                domains = file.open().strip()
+                for domain in domains:
+                    url = f"https://{domain}/"
+                    Dns.find_redirection(url)
+        else:
+            if 
+            Dns.find_redirection(url)
+    except Exception as e:
+        print(f"⚠️  Error ->  {e}")
 
 
 
