@@ -167,7 +167,61 @@ def redirection_checker(url,domainlist):
         print(f"⚠️  Error ->  {e}")
 
 
+#status code checker
 
+def status_checker(url_or_file, code):
+    try:
+        # If the input is a file
+        if url_or_file.endswith('.txt'):
+            with open(url_or_file, "r") as file:
+                urls = file.read().split()
+        else:
+            # Otherwise, treat it as a single URL
+            urls = [url_or_file]
+
+        for url in urls:
+            Dns.status_code_checker(url, int(code))
+
+    except FileNotFoundError:
+        print(f"❌ File '{url_or_file}' not found.")
+    except Exception as e:
+        print(f"⚠️ Error checking status codes: {e}")
+
+
+  # Get WHOIS Data
+def recon(domain):
+    if not domain:
+        print("❌ No domain provided for WHOIS lookup.")
+        return
+
+    try:
+        print(f"🔍 Fetching WHOIS info for: {domain}")
+        whois_data = Dns.get_whois_data(domain)
+        print(whois_data)
+    except Exception as e:
+        print(f"⚠️  Error fetching WHOIS data for {domain}: {e}")
+
+
+#Fetech Dns info
+def dns_enum(domain):
+    if not domain:
+        print("❌ No domain provided for WHOIS lookup.")
+        return
+    try:
+        print(f"🔍 Fetching Dns info for: {domain}")
+        dns_data = Dns.get_dns_info(domain)
+        print(dns_data)
+    except Exception as e:
+        print(f"⚠️  Error fetching dns info for {domain}: {e}")
+
+
+
+                
+   
+
+    
+   
+        
 
 
 
@@ -207,6 +261,23 @@ def main():
     red.add_argument('-u','--url',help="Test redirection on single url",metavar=" ")
     red.add_argument('-iL','--inputfile',help="list of target urls",metavar= " ")
 
+    #status code Checker 
+    sc= subparsers.add_parser('code',help="To check status_code for urls OR find redirection url, Forbidden pages")
+    sc.add_argument('-u','--url',help="check status code for single url",metavar=" ")
+    sc.add_argument('-i','--urlfile',help="Input urls file",metavar=" ")
+    sc.add_argument('-c','--status_code',help="put status code 403,200,302 etc.",metavar="")
+
+
+    #Whois recon
+    whois = subparsers.add_parser("whois",help="Fetch whois data")
+    whois.add_argument('-d','--domain',required=True,help="Target domain")
+
+
+    # DNS recon
+    dns = subparsers.add_parser("dns", help="DNS Recon (NS, MX, CNAME, A Record, TXT Record)")
+    dns.add_argument('-d', '--domain', required=True, help="Target Domain")
+
+
     args = parser.parse_args()  
 
     
@@ -218,12 +289,29 @@ def main():
             with open(args.inputfile) as f:
                 wordlist = [line.strip() for line in f if line.strip()]
         host_discovery(args.domain,wordlist,args.timeout)
+
     #elif args.command == "port":
         #scanner(args.domain,args.port,args.output)
+
     elif args.command == "sub":
         subdomain(args.domain,args.wordlists)
+
     elif args.command == "redir":
         redirection_checker(args.url,args.inputfile)
+
+    elif args.command == "code":
+     url_input = args.url if args.url else args.urlfile
+     if not url_input or not args.status_code:
+        print("❌ Please provide either a single URL or a file of URLs along with a status code.")
+     else:
+        status_checker(url_input, args.status_code)
+
+    elif args.command == "whois":
+        recon(args.domain)
+
+    elif args.command == "dns":
+        dns_enum(args.domain)
+
     else:
         parser.print_help()
 
