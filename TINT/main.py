@@ -1,6 +1,5 @@
 import random
 from Dns_methods import Dns
-import port_scanner
 import argparse
 
 def get_banners():
