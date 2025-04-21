@@ -237,11 +237,13 @@ def reverse_dns(ip):
          print("❌ No ip address provided for reverse dns lookup.")
          return
     try:
-        print(f"🔍 Fetching domain info for: {ip}")
+        print(f"🔍 Fetching info for: {ip}")
         domain = Dns.reverse_dns(ip)
         print(domain)
     except Exception as e:
-         print(f"⚠️  Error fetching domain for {ip}: {e}")
+         print(f"⚠️  Error fetching info for {ip}: {e}")
+
+
 
 
 
@@ -309,6 +311,10 @@ def main():
     dns = subparsers.add_parser("dns", help="DNS Recon (NS, MX, CNAME, A Record, TXT Record)")
     dns.add_argument('-d', '--domain', required=True, help="Target Domain")
 
+    #reverse dns
+
+    rdns = subparsers.add_parser("rdns",help="Reverse dns lookup ")
+    rdns.add_argument('-i','--ip',required=True,help="Target ip address")
 
     args = parser.parse_args()  
 
@@ -341,8 +347,12 @@ def main():
     elif args.command == "whois":
         recon(args.domain)
 
+
     elif args.command == "dns":
         dns_enum(args.domain)
+
+    elif args.command == "rdns":
+        reverse_dns(args.ip)
 
     else:
         parser.print_help()
