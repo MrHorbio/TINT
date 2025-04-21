@@ -6,8 +6,6 @@ import dns.resolver
 import re
 
 
-url="https://admin.google.com"
-domain="google.com"
 
 
 
@@ -59,36 +57,65 @@ class Dns:
                 if Dns.is_host_alive(full_domain):
                     print(f"[+] Found: {full_domain}")
 
+
         @staticmethod
         #Function for find redirection and history 
 
-        def find_redirection(url):
+        def redirection_checker(url=None, domainlist=None):
+            def sanitize_domain(domain):
+                domain = domain.strip()
+                if not domain:
+                    return None
+                if domain.startswith("http://") or domain.startswith("https://"):
+                    return domain
+                return f"https://{domain}"
+
+            def find_redirection(url):
+                try:
+                    response = requests.get(url, allow_redirects=True, timeout=5)
+                    if response.history:
+                        print(f"\n🔗 Redirection chain for {url}:")
+                        for resp in response.history:
+                            print(f"  {resp.status_code} -> {resp.url}")
+                        print(f"✅ Final URL: {response.url}\n")
+                        return response.url
+                    else:
+                        print(f"\n✅ No redirects for {url}.\n")
+                        return url
+                except requests.RequestException as e:
+                    print(f"\n❌ Error with {url} -> {e}\n")
+                    return None
 
             try:
-                response=requests.get(url,allow_redirects=True,timeout=5)
-                if response.history:
-                    print("Redirection chain:")
-                    for resp in response.history:
-                        print(f"{resp.status_code} -> {resp.url}")
-                    print(f"Final URL:{response.url}")
-                    return response.url
-                else:
-                    print("no redirects.")
-                    return domain
-            except requests.RequestException as e:
-                print(F"Error-> {e} ")
-                return None
+                if domainlist:
+                    with open(domainlist, 'r') as file:
+                        domains = file.read().splitlines()
 
-        @staticmethod
-        def status_code_checker(url, code):
-                try:
-                    response = requests.get(url, timeout=5)
-                    if response.status_code == code:
-                        result = f"{url} -> {response.status_code}"
-                        print(result)
-                except requests.RequestException as e:
-                    print(f"Failed to connect to {url}: {e}")
-        
+                    for domain in domains:
+                        full_url = sanitize_domain(domain)
+                        if full_url:
+                            find_redirection(full_url)
+
+                elif url:
+                    full_url = sanitize_domain(url)
+                    find_redirection(full_url)
+
+                else:
+                    print("⚠️  No URL or domain list provided.")
+
+            except Exception as e:
+                print(f"⚠️  Unexpected Error -> {e}")
+
+                @staticmethod
+                def status_code_checker(url, code):
+                        try:
+                            response = requests.get(url, timeout=5)
+                            if response.status_code == code:
+                                result = f"{url} -> {response.status_code}"
+                                print(result)
+                        except requests.RequestException as e:
+                            print(f"Failed to connect to {url}: {e}")
+                
 
             
         @staticmethod

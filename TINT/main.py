@@ -140,31 +140,48 @@ def subdomain(domain,wordlists):
 
 
 #check redirection 
-def redirection_checker(url,domainlist):
+def redirection_checker(url=None, domainlist=None):
+    import requests  # Ensure it's inside the function or at the top of your file
+
+    def sanitize(domain):
+        domain = domain.strip().rstrip('/')
+        if not domain:
+            return None
+        if not domain.startswith(("http://", "https://")):
+            domain = f"https://{domain}"
+        return domain
+
+    def find_redirection(url):
+        try:
+            response = requests.get(url, allow_redirects=True, timeout=5)
+            if response.history:
+                print(f"\n🔗 Redirection chain for {url}:")
+                for resp in response.history:
+                    print(f"  {resp.status_code} -> {resp.url}")
+                print(f"✅ Final URL: {response.url}\n")
+            else:
+                print(f"\n✅ No redirects for {url}.\n")
+        except requests.RequestException as e:
+            print(f"\n❌ Error with {url} -> {e}\n")
+
     try:
         if domainlist:
-            with open(domainlist,'r') as file:
+            with open(domainlist, 'r') as file:
                 domains = file.read().splitlines()
+            for domain in domains:
+                full_url = sanitize(domain)
+                if full_url:
+                    find_redirection(full_url)
 
-                for domain in domains:
-                    domain = domain.strip()
-                    if domain and '.' in domain:
-                        url = f"https://{domain}/"
-                        try:
-                            Dns.find_redirection(url)
-                        except Exception as e :
-                            print(e)
-                        
+        elif url:
+            full_url = sanitize(url)
+            find_redirection(full_url)
+
         else:
-            if not url.startswith(("https" or "http")):
-                correct_url = f"https://{url}/"
-            else:
-                correct_url = url
-            
-            Dns.find_redirection(correct_url)
+            print("⚠️  No URL or domain list provided.")
 
     except Exception as e:
-        print(f"⚠️  Error ->  {e}")
+        print(f"⚠️  Error -> {e}")
 
 
 #status code checker
@@ -213,6 +230,16 @@ def dns_enum(domain):
         print(dns_data)
     except Exception as e:
         print(f"⚠️  Error fetching dns info for {domain}: {e}")
+
+#reverse dns 
+def reverse_dns(ip):
+    if not ip :
+         print("❌ No ip address provided for reverse dns lookup.")
+         return
+    try:
+        
+
+
 
 
 
