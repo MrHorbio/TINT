@@ -237,7 +237,12 @@ def reverse_dns(ip):
          print("❌ No ip address provided for reverse dns lookup.")
          return
     try:
-        
+        print(f"🔍 Fetching domain info for: {ip}")
+        domain = Dns.reverse_dns(ip)
+        print(domain)
+    except Exception as e:
+         print(f"⚠️  Error fetching domain for {ip}: {e}")
+
 
 
 
