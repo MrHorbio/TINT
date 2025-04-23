@@ -1,7 +1,7 @@
 # 🕵️‍♂️ TINT: Target Information Gathering Tool
 
 <p align="center">
-  <img src="https://github.com/MrHorbio/TINT/TINT/static/banner.png" alt="TINT Banner" width="200px" />
+  <img src="https://github.com/MrHorbio/TINT/blob/main/TINT/static/banner.png" alt="TINT Banner" width="200px" />
 </p>
 
 <p align="center">
@@ -131,7 +131,7 @@ python tint.py rdns -i 8.8.8.8
 
 | UI Preview | Terminal Mode |
 |------------|---------------|
-| <img src="https://your-desktop-screenshot-url.com" width="400"/> | <img src="https://your-terminal-screenshot-url.com" width="400"/> |
+| <img src="https://github.com/MrHorbio/TINT/blob/main/TINT/static/UI.png" width="400"/> | <img src="https://github.com/MrHorbio/TINT/blob/main/TINT/static/tuto.gif" width="400"/> |
 
 
 ---
