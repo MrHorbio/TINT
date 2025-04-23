@@ -1,7 +1,7 @@
 # 🕵️‍♂️ TINT: Target Information Gathering Tool
 
 <p align="center">
-  <img src="https://github.com/MrHorbio/TINT/blob/main/banner.png" alt="TINT Banner" width="200px" />
+  <img src="https://github.com/MrHorbio/TINT/TINT/static/banner.png" alt="TINT Banner" width="200px" />
 </p>
 
 <p align="center">
