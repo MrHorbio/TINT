@@ -1,6 +1,6 @@
 <!-- TINT: Target Information Gathering Tool -->
 <p align="center">
-  <img src="https://your-banner-image-url.com" alt="TINT Banner" width="100%" />
+  <img src="images/banner.jpg" alt="TINT Banner" width="100%" />
 </p>
 
 <h1 align="center">🕵️‍♂️ TINT</h1>
