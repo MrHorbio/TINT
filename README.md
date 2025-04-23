@@ -17,6 +17,16 @@
   <img src="https://img.shields.io/badge/license-MIT-yellow?style=flat-square" alt="License">
 </p>
 
+
+
+<p align="center">
+  <a href="#features">Features</a> •
+  <a href="#installation">Install</a> •
+  <a href="#running-subfinder">Usage</a> •
+  <a href="#post-installation-instructions">API Setup</a> •
+  <a href="#subfinder-go-library">Library</a> •
+  <a href="https://discord.gg/projectdiscovery">Join Discord</a>
+</p>
 ---
 
 ## 🔍 Features
