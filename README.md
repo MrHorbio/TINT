@@ -1,6 +1,6 @@
 <!-- TINT: Target Information Gathering Tool -->
 <p align="center">
-  <img src="https://github.com/MrHorbio/TINT/blob/main/banner.png" alt="TINT Banner" width="100px" />
+  <img src="https://github.com/MrHorbio/TINT/blob/main/banner.png" alt="TINT Banner" width="200px" />
 </p>
 
 <h1 align="center">🕵️‍♂️ TINT</h1>
