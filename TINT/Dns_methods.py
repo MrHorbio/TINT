@@ -105,16 +105,17 @@ class Dns:
 
             except Exception as e:
                 print(f"⚠️  Unexpected Error -> {e}")
-
-                @staticmethod
-                def status_code_checker(url, code):
-                        try:
-                            response = requests.get(url, timeout=5)
-                            if response.status_code == code:
-                                result = f"{url} -> {response.status_code}"
-                                print(result)
-                        except requests.RequestException as e:
-                            print(f"Failed to connect to {url}: {e}")
+        
+        @staticmethod
+        def status_code_checker(url, code):
+            try:
+                response = requests.get(url, timeout=5)
+                if response.status_code == code:
+                    print(f"{url} -> ✅ {response.status_code}")
+                else:
+                    print(f"{url} -> ❌ {response.status_code} (Expected: {code})")
+            except requests.RequestException as e:
+                print(f"⚠️ Failed to connect to {url}: {e}")
                 
 
             
