@@ -1,6 +1,8 @@
 import random
 from Dns_methods import Dns
 import argparse
+import results
+import os
 
 def get_banners():
     return [
@@ -100,28 +102,45 @@ def UI():
             f.write(result)'''
 
 #function for  host discovery 
-def  host_discovery(domain,wordlist=None,timeout=None):
+def  host_discovery(domain,output,wordlist=None,timeout=None,):
     t = timeout if timeout else 5 
     if wordlist:
         for word in wordlist:
             try:
                 result = Dns.is_host_alive(word,port=80,timeout=t)
                 if result:
+                    out_come = word
+                    try: 
+                        if output:
+                            results.save(output,out_come)
+                    except: 
+                        print("file not saved ,Something went wrong")
+                    
                     print(f"✔️  {word}-> host is up")
                 else:
                     print(f"❌  {word} -> host is down")
             except Exception as e:
                 print(f"⚠️  Error checking {word}: {e}")
+            
+            check_result = os.path.exists(output)
+        if check_result:
+                print(f"File is saved as {output}")
+            
+    
     else:
         # Only one domain to check
         try:
             result = Dns.is_host_alive(domain, port=80, timeout=t)
             if result:
+                out_come = domain
                 print(f"✔️  {domain} -> host is up")
             else:
                 print(f"❌  {domain} -> host is down")
         except Exception as e:
             print(f"⚠️  Error checking {domain}: {e}")
+
+
+        
 
 
 #function for subdomain enumeration
@@ -272,7 +291,7 @@ def main():
     host_parser = subparsers.add_parser('host',help="  Perform host discovery")
     host_parser.add_argument('-d', '--domain',  help='Target domain to scan',metavar='')
     host_parser.add_argument('-iL','--inputfile',  help='-iL <inputfilename>: Input from list of hosts/networks',metavar='')
-    #host_parser.add_argument('-p', '--port', help='Target port number')
+    host_parser.add_argument('-o', '--output', help='save result (.txt)')
     host_parser.add_argument('-t', '--timeout', type=int, help='Timeout in seconds (default: 5)',metavar='')
 
 
@@ -325,7 +344,7 @@ def main():
         if args.inputfile:
             with open(args.inputfile) as f:
                 wordlist = [line.strip() for line in f if line.strip()]
-        host_discovery(args.domain,wordlist,args.timeout)
+        host_discovery(args.domain,args.output,wordlist,args.timeout)
 
     #elif args.command == "port":
         #scanner(args.domain,args.port,args.output)
