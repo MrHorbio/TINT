@@ -145,20 +145,27 @@ def  host_discovery(domain,output,wordlist=None,timeout=None,):
 
 #function for subdomain enumeration
 
-def subdomain(domain,wordlists):
+def subdomain(domain,wordlists,output):
     
     if wordlists:
         print("Brute force is running.... ")
         a = Dns.brute_force(domain,wordlists)
         print(a)
+        if output:
+            results.save(output,a)
     else:
        print("Fetching Subdomains..... ")
        a = Dns.crt_sh(domain)
        print(a)
 
+    check_result = os.path.exists(output)
+    if check_result:
+            print(f"File is saved as {output}")
+            
+
 
 #check redirection 
-def redirection_checker(url=None, domainlist=None):
+def redirection_checker(url=None, domainlist=None,output=None):
     import requests  # Ensure it's inside the function or at the top of your file
 
     def sanitize(domain):
@@ -167,7 +174,10 @@ def redirection_checker(url=None, domainlist=None):
             return None
         if not domain.startswith(("http://", "https://")):
             domain = f"https://{domain}"
+        if output:
+            results.save(output,domain)
         return domain
+        
 
     def find_redirection(url):
         try:
@@ -306,12 +316,14 @@ def main():
     sub = subparsers.add_parser('sub',help="Perform subdomain enumeration")
     sub.add_argument('-d','--domain', required=True,help="Target domain to scan", metavar="")
     sub.add_argument('-w','--wordlists',help="PATH/of/Wordlist",metavar="")
+    sub.add_argument('-o','--output',help="save output (.txt) ",metavar="")
 
 
     #find redirections
     red = subparsers.add_parser('redir',help="Perform redirection check ")
     red.add_argument('-u','--url',help="Test redirection on single url",metavar=" ")
     red.add_argument('-iL','--inputfile',help="list of target urls",metavar= " ")
+    red.add_argument('-o','--output',help="save Output (.txt)",metavar= " ")
 
     #status code Checker 
     sc= subparsers.add_parser('code',help="To check status_code for urls OR find redirection url, Forbidden pages")
@@ -350,10 +362,10 @@ def main():
         #scanner(args.domain,args.port,args.output)
 
     elif args.command == "sub":
-        subdomain(args.domain,args.wordlists)
+        subdomain(args.domain,args.wordlists,args.output)
 
     elif args.command == "redir":
-        redirection_checker(args.url,args.inputfile)
+        redirection_checker(args.url,args.inputfile,args.output)
 
     elif args.command == "code":
      url_input = args.url if args.url else args.urlfile
