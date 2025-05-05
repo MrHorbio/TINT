@@ -214,7 +214,7 @@ def redirection_checker(url=None, domainlist=None,output=None):
 
 #status code checker
 
-def status_checker(url_or_file, code):
+def status_checker(url_or_file,code,output):
     try:
         # If the input is a file
         if url_or_file.endswith('.txt'):
@@ -224,8 +224,11 @@ def status_checker(url_or_file, code):
             # Otherwise, treat it as a single URL
             urls = [url_or_file]
 
+        
         for url in urls:
             Dns.status_code_checker(url, int(code))
+           
+
 
     except FileNotFoundError:
         print(f"❌ File '{url_or_file}' not found.")
@@ -330,6 +333,7 @@ def main():
     sc.add_argument('-u','--url',help="check status code for single url",metavar=" ")
     sc.add_argument('-i','--urlfile',help="Input urls file",metavar=" ")
     sc.add_argument('-c','--status_code',help="put status code 403,200,302 etc.",metavar="")
+    #sc.add_argument('-o','--output',help="save output (.txt)",metavar=" ")
 
 
     #Whois recon
