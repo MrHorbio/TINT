@@ -274,14 +274,7 @@ def reverse_dns(ip):
     except Exception as e:
          print(f"⚠️  Error fetching info for {ip}: {e}")
 
-
-
-
-
-
-
-
-                
+            
    
 
     
