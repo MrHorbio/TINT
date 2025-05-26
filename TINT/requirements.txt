@@ -1,0 +1,6 @@
+requests
+jsonlib
+dnspython
+argparse
+os
+re
